@@ -1,0 +1,64 @@
+<!-- video.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Watch — LetsWatch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="lw-header">
+    <div class="lw-brand">
+      <img src="assets/logo.svg" alt="Starbrightly Logo" class="lw-logo">
+      <span class="lw-title">LetsWatch</span>
+    </div>
+    <nav class="lw-nav">
+      <a href="index.html">Home</a>
+      <a href="videos.html">Browse</a>
+    </nav>
+    <form class="lw-search" action="videos.html">
+      <input type="text" name="q" placeholder="Search videos...">
+      <button type="submit">Search</button>
+    </form>
+  </header>
+
+  <main class="lw-container">
+    <article class="lw-watch" id="watchArea">
+      <!-- Video player and details injected -->
+    </article>
+
+    <section class="lw-related">
+      <h2>Related videos</h2>
+      <div class="lw-grid" id="relatedGrid">
+        <!-- Related injected -->
+      </div>
+    </section>
+  </main>
+
+  <footer class="lw-footer">
+    <p>© 2025 Starbrightly — LetsWatch</p>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get('id');
+      const video = VIDEOS.find(v => v.id === id);
+
+      if (!video) {
+        document.getElementById('watchArea').innerHTML = '<p class="lw-empty">Video not found.</p>';
+        return;
+      }
+
+      renderWatch(document.getElementById('watchArea'), video);
+      const related = getRelatedVideos(VIDEOS, video, 6);
+      renderVideoGrid(document.getElementById('relatedGrid'), related, { showCategory: true });
+    });
+  </script>
+</body>
+</html>
