@@ -1,0 +1,114 @@
+<!-- videos.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Browse — LetsWatch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="lw-header">
+    <div class="lw-brand">
+      <img src="assets/logo.svg" alt="Starbrightly Logo" class="lw-logo">
+      <span class="lw-title">LetsWatch</span>
+    </div>
+    <nav class="lw-nav">
+      <a href="index.html">Home</a>
+      <a href="videos.html" class="active">Browse</a>
+    </nav>
+    <form class="lw-search" action="videos.html">
+      <input type="text" name="q" id="searchInput" placeholder="Search videos...">
+      <button type="submit">Search</button>
+    </form>
+  </header>
+
+  <main class="lw-container">
+    <section class="lw-filters">
+      <div class="lw-chips" id="categoryChips">
+        <!-- Categories injected -->
+      </div>
+      <div class="lw-sort">
+        <label for="sortSelect">Sort:</label>
+        <select id="sortSelect">
+          <option value="recent">Most recent</option>
+          <option value="popular">Most popular</option>
+          <option value="title">Title A–Z</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="lw-grid" id="videos-grid">
+      <!-- Video cards injected -->
+    </section>
+
+    <section class="lw-pagination" id="pagination">
+      <!-- Pagination injected -->
+    </section>
+  </main>
+
+  <footer class="lw-footer">
+    <p>© 2025 Starbrightly — LetsWatch</p>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(location.search);
+      const q = params.get('q') || '';
+      const categoryParam = params.get('category') || 'All';
+
+      // Prefill search
+      document.getElementById('searchInput').value = q;
+
+      // Build category chips
+      const categories = ['All', ...getUniqueCategories(VIDEOS)];
+      renderCategoryChips(document.getElementById('categoryChips'), categories, categoryParam);
+
+      // Sorting
+      const sortSelect = document.getElementById('sortSelect');
+      sortSelect.addEventListener('change', () => render());
+
+      // Pagination state
+      let currentPage = 1;
+      const pageSize = 12;
+
+      function render() {
+        const sort = sortSelect.value;
+        const filtered = filterVideos(VIDEOS, { q, category: getActiveCategory(), sort });
+        const pageCount = Math.max(1, Math.ceil(filtered.length / pageSize));
+        currentPage = Math.min(currentPage, pageCount);
+
+        const start = (currentPage - 1) * pageSize;
+        const pageItems = filtered.slice(start, start + pageSize);
+        renderVideoGrid(document.getElementById('videos-grid'), pageItems, { showCategory: true, showViews: true });
+
+        renderPagination(document.getElementById('pagination'), currentPage, pageCount, (page) => {
+          currentPage = page;
+          render();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+
+      function getActiveCategory() {
+        const active = document.querySelector('.lw-chip.active');
+        return active ? active.dataset.category : 'All';
+      }
+
+      // Category chip click handling
+      document.getElementById('categoryChips').addEventListener('click', (e) => {
+        const chip = e.target.closest('.lw-chip');
+        if (!chip) return;
+        document.querySelectorAll('.lw-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        render();
+      });
+
+      render();
+    });
+  </script>
+</body>
+</html>
