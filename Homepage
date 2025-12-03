@@ -1,1 +1,58 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LetsWatch — Starbrightly</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="assets/logo.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="lw-header">
+    <div class="lw-brand">
+      <img src="assets/logo.svg" alt="Starbrightly Logo" class="lw-logo">
+      <span class="lw-title">LetsWatch</span>
+    </div>
+    <nav class="lw-nav">
+      <a href="index.html" class="active">Home</a>
+      <a href="videos.html">Browse</a>
+    </nav>
+    <form class="lw-search" action="videos.html">
+      <input type="text" name="q" placeholder="Search videos...">
+      <button type="submit">Search</button>
+    </form>
+  </header>
+
+  <main class="lw-container">
+    <section class="lw-hero">
+      <h1>Welcome to LetsWatch</h1>
+      <p>Discover, watch, and favorite Starbrightly videos.</p>
+      <div class="lw-cta">
+        <a class="btn-primary" href="videos.html">Browse videos</a>
+        <a class="btn-secondary" href="videos.html?category=Featured">See featured</a>
+      </div>
+    </section>
+
+    <section class="lw-grid" id="featured-grid">
+      <!-- Featured videos injected by JS -->
+    </section>
+  </main>
+
+  <footer class="lw-footer">
+    <p>© 2025 Starbrightly — LetsWatch</p>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    // Home: render featured videos
+    document.addEventListener('DOMContentLoaded', () => {
+      const featured = VIDEOS.filter(v => v.featured).slice(0, 6);
+      renderVideoGrid(document.getElementById('featured-grid'), featured, { showCategory: true });
+    });
+  </script>
+</body>
+</html>
 
